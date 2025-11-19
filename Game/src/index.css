@@ -1,0 +1,4 @@
+/* Game/src/index.css */
+@import "tailwindcss";
+
+html, body, #root { height: 100%; }

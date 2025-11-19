@@ -1,0 +1,920 @@
+[
+  {
+    "key": "5HY_W101",
+    "name": "The Quintessential Quintuplets Movie",
+    "file": "5HY_W101.json",
+    "lang": "EN"
+  },
+  {
+    "key": "5HY_W83",
+    "name": "The Quintessential Quintuplets",
+    "file": "5HY_W83.json",
+    "lang": "EN"
+  },
+  {
+    "key": "5HY_W90",
+    "name": "The Quintessential Quintuplets 2",
+    "file": "5HY_W90.json",
+    "lang": "EN"
+  },
+  {
+    "key": "5HY_WE43",
+    "name": "[EX] The Quintessential Quintuplets Specials",
+    "file": "5HY_WE43.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AB_W31",
+    "name": "PR Card 【Weiẞ Side】",
+    "file": "AB_W31.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AOT2_S50",
+    "name": "Attack on Titan Vol.2",
+    "file": "AOT2_S50.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AOT_S35",
+    "name": "Attack on Titan",
+    "file": "AOT_S35.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AOT_SX04",
+    "name": "Attack On Titan: Final Season",
+    "file": "AOT_SX04.json",
+    "lang": "EN"
+  },
+  {
+    "key": "APO_S53",
+    "name": "Fate/Apocrypha",
+    "file": "APO_S53.json",
+    "lang": "EN"
+  },
+  {
+    "key": "ARI_S103",
+    "name": "Arifureta: From Commonplace to World’s Strongest",
+    "file": "ARI_S103.json",
+    "lang": "EN"
+  },
+  {
+    "key": "ATLA_WX04",
+    "name": "Avatar: The Last Airbender",
+    "file": "ATLA_WX04.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AT_WX02",
+    "name": "Adventure Time",
+    "file": "AT_WX02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AW2_S43",
+    "name": "Accel・World -Infinite Burst-",
+    "file": "AW2_S43.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AW_S18",
+    "name": "Accel・World",
+    "file": "AW_S18.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AYT_W110",
+    "name": "Ayakashi Triangle",
+    "file": "AYT_W110.json",
+    "lang": "EN"
+  },
+  {
+    "key": "AZL_S102",
+    "name": "Azur Lane",
+    "file": "AZL_S102.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BAV_W112",
+    "name": "Booster Pack Blue Archive",
+    "file": "BAV_W112.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD2_W73",
+    "name": "BanG Dream! Vol.2",
+    "file": "BD2_W73.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BDG_W54",
+    "name": "BanG Dream! Girls Band Party!",
+    "file": "BDG_W54.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BDG_W63",
+    "name": "BanG Dream! Girls Band Party! Vol.2",
+    "file": "BDG_W63.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BDML_W03",
+    "name": "BanG Dream! Girls Band Party! MULTI LIVE",
+    "file": "BDML_W03.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD_W125",
+    "name": "Booster Pack MyGO!!!!! × Ave Mujica",
+    "file": "BD_W125.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD_W47",
+    "name": "BanG Dream!",
+    "file": "BD_W47.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD_W95",
+    "name": "BanG Dream! Girls Band Party! 5th Anniversary",
+    "file": "BD_W95.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD_WE34",
+    "name": "BanG Dream! Girls Band Party Morfonica×RAISE A SUILEN",
+    "file": "BD_WE34.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD_WE35",
+    "name": "BanG Dream! Girls Band Party Extra Booster Poppin’Party×Roselia",
+    "file": "BD_WE35.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BD_WE42",
+    "name": "Bang Dream! Girls Band Party! Countdown Collection",
+    "file": "BD_WE42.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BFR_S78",
+    "name": "BOFURI: I Don’t Want to Get Hurt, so I’ll Max Out My Defense.",
+    "file": "BFR_S78.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BM_S15",
+    "name": "BAKEMONOGATARI",
+    "file": "BM_S15.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BNJ_SX01",
+    "name": "Batman Ninja",
+    "file": "BNJ_SX01.json",
+    "lang": "EN"
+  },
+  {
+    "key": "BTR_W107",
+    "name": "BOCCHI THE ROCK!",
+    "file": "BTR_W107.json",
+    "lang": "EN"
+  },
+  {
+    "key": "CCS_WX01",
+    "name": "Cardcaptor Sakura : Clear Card",
+    "file": "CCS_WX01.json",
+    "lang": "EN"
+  },
+  {
+    "key": "CSM_S96",
+    "name": "Chainsaw Man",
+    "file": "CSM_S96.json",
+    "lang": "EN"
+  },
+  {
+    "key": "DAL_W79",
+    "name": "Date A Live",
+    "file": "DAL_W79.json",
+    "lang": "EN"
+  },
+  {
+    "key": "DAL_W99",
+    "name": "Date A Live Vol.2",
+    "file": "DAL_W99.json",
+    "lang": "EN"
+  },
+  {
+    "key": "DAL_WE33",
+    "name": "Date A Bullet",
+    "file": "DAL_WE33.json",
+    "lang": "EN"
+  },
+  {
+    "key": "DDM_S88",
+    "name": "Is It Wrong to Try to Pick Up Girls in a Dungeon?",
+    "file": "DDM_S88.json",
+    "lang": "EN"
+  },
+  {
+    "key": "DG_S03",
+    "name": "Disgaea",
+    "file": "DG_S03.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FGO_S75",
+    "name": "Fate/Grand Order Absolute Demonic Front: Babylonia",
+    "file": "FGO_S75.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FGO_S87",
+    "name": "Fate/Grand Order THE MOVIE Divine Realm of the Round Table: Camelot",
+    "file": "FGO_S87.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FJM_W65",
+    "name": "Fujimi Fantasia Bunko",
+    "file": "FJM_W65.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FSU2_S36",
+    "name": "Fate/stay night [Unlimited Blade Works] Vol.2",
+    "file": "FSU2_S36.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FSU_S34",
+    "name": "Fate/stay night [Unlimited Blade Works]",
+    "file": "FSU_S34.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FS_S64",
+    "name": "Fate/stay night [Heaven’s Feel]",
+    "file": "FS_S64.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FS_S77",
+    "name": "Fate/stay night [Heaven's Feel] Vol.2",
+    "file": "FS_S77.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FT_S02",
+    "name": "FAIRY TAIL ver.E",
+    "file": "FT_S02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "FZ_S17",
+    "name": "Fate/Zero",
+    "file": "FZ_S17.json",
+    "lang": "EN"
+  },
+  {
+    "key": "GBS_S63",
+    "name": "PR Card 【Schwarz Side】",
+    "file": "GBS_S63.json",
+    "lang": "EN"
+  },
+  {
+    "key": "GGO_S59",
+    "name": "SAO Alternative – Gun Gale Online –",
+    "file": "GGO_S59.json",
+    "lang": "EN"
+  },
+  {
+    "key": "GGO_SE50",
+    "name": "Love Live! School idol festival 2 MIRACLE LIVE!",
+    "file": "GGO_SE50.json",
+    "lang": "EN"
+  },
+  {
+    "key": "GGST_SX06",
+    "name": "Guilty Gear -Strive-",
+    "file": "GGST_SX06.json",
+    "lang": "EN"
+  },
+  {
+    "key": "GL_S52",
+    "name": "GURREN LAGANN",
+    "file": "GL_S52.json",
+    "lang": "EN"
+  },
+  {
+    "key": "GRI_S72",
+    "name": "The Fruit of Grisaia",
+    "file": "GRI_S72.json",
+    "lang": "EN"
+  },
+  {
+    "key": "G_WS02",
+    "name": "Dengeki Bunko",
+    "file": "G_WS02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "HOL_W104",
+    "name": "hololive production Vol.2",
+    "file": "HOL_W104.json",
+    "lang": "EN"
+  },
+  {
+    "key": "HOL_W91",
+    "name": "hololive production",
+    "file": "HOL_W91.json",
+    "lang": "EN"
+  },
+  {
+    "key": "HOL_WE36",
+    "name": "hololive production",
+    "file": "HOL_WE36.json",
+    "lang": "EN"
+  },
+  {
+    "key": "HOL_WE44",
+    "name": "hololive production Summer Collection",
+    "file": "HOL_WE44.json",
+    "lang": "EN"
+  },
+  {
+    "key": "HOL_WE45",
+    "name": "hololive production feat. Weiß Schwarz Ambassadors",
+    "file": "HOL_WE45.json",
+    "lang": "EN"
+  },
+  {
+    "key": "IMC_W41",
+    "name": "THE IDOLM@STER CINDERELLA GIRLS",
+    "file": "IMC_W41.json",
+    "lang": "EN"
+  },
+  {
+    "key": "JJ_S66",
+    "name": "JoJo's Bizarre Adventure: Golden Wind",
+    "file": "JJ_S66.json",
+    "lang": "EN"
+  },
+  {
+    "key": "JJ_SE41",
+    "name": "[EX] JoJo’s Bizarre Adventure: Stardust Crusaders",
+    "file": "JJ_SE41.json",
+    "lang": "EN"
+  },
+  {
+    "key": "JJ_SE42",
+    "name": "[EX] JoJo’s Bizarre Adventure: Stone Ocean",
+    "file": "JJ_SE42.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KC2_S31",
+    "name": "Kancolle, 2nd Fleet",
+    "file": "KC2_S31.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KC3_S42",
+    "name": "KanColle : Arrival! Reinforcement Fleets from Europe!",
+    "file": "KC3_S42.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KCE1_SE28",
+    "name": "KanColle : Fleet in the Deep Sea, Sighted!",
+    "file": "KCE1_SE28.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KC_S25",
+    "name": "Kancolle",
+    "file": "KC_S25.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KGL_S79",
+    "name": "Kaguya-sama: Love is War",
+    "file": "KGL_S79.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KGL_S95",
+    "name": "Kaguya-sama: Love Is War?",
+    "file": "KGL_S95.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KLK_S27",
+    "name": "KILL la KILL",
+    "file": "KLK_S27.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KLK_SP03",
+    "name": "Power Up Set 2023 - KILL La KILL",
+    "file": "KLK_SP03.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KMD_W96",
+    "name": "Miss Kobayashi’s Dragon Maid",
+    "file": "KMD_W96.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KNK_W86",
+    "name": "Rent-A-Girlfriend",
+    "file": "KNK_W86.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KS2_W55",
+    "name": "KONOSUBA -God’s blessing on this wonderful world! 2",
+    "file": "KS2_W55.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KS_W49",
+    "name": "KONOSUBA -God’s blessing on this wonderful world!",
+    "file": "KS_W49.json",
+    "lang": "EN"
+  },
+  {
+    "key": "KS_W76",
+    "name": "KONOSUBA -God’s blessing on this wonderful world! Legend of Crimson",
+    "file": "KS_W76.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LH_SE20",
+    "name": "LOG HORIZON",
+    "file": "LH_SE20.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LH_SP02",
+    "name": "Power Up Set 2023 - LOG HORIZON",
+    "file": "LH_SP02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LL2_W34",
+    "name": "Love Live! Vol.2",
+    "file": "LL2_W34.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LLDX2_W02",
+    "name": "Love Live! DX Vol.2",
+    "file": "LLDX2_W02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LLDX_W01",
+    "name": "Love Live! DX",
+    "file": "LLDX_W01.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LL_W24",
+    "name": "Love Live!",
+    "file": "LL_W24.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LL_WE39",
+    "name": "[EX] Love Live! School idol festival Series 10th Anniversary",
+    "file": "LL_WE39.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LNJ_WE39",
+    "name": "[EX] Love Live! School idol festival Series 10th Anniversary",
+    "file": "LNJ_WE39.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LRC_W105",
+    "name": "Lycoris Recoil",
+    "file": "LRC_W105.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LRC_WE47",
+    "name": "[EX] Premium Booster Lycoris Recoil",
+    "file": "LRC_WE47.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LSSE1_WE27",
+    "name": "Love Live! Sunshine!!",
+    "file": "LSSE1_WE27.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LSS_W45",
+    "name": "Love Live! Sunshine!!",
+    "file": "LSS_W45.json",
+    "lang": "EN"
+  },
+  {
+    "key": "LSS_WE39",
+    "name": "[EX] Love Live! School idol festival Series 10th Anniversary",
+    "file": "LSS_WE39.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MAR_S89",
+    "name": "MARVEL",
+    "file": "MAR_S89.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MDE_SE45",
+    "name": "[EX] MACROSS Delta",
+    "file": "MDE_SE45.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MK_S11",
+    "name": "【Tutorial Deck】 Detective Opera Milky Holmes",
+    "file": "MK_S11.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MMR_W35",
+    "name": "PUELLA MAGI MADOKA MAGICA THE MOVIE -Rebellion-",
+    "file": "MMR_W35.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MM_W17",
+    "name": "Puella Magi Madoka Magica",
+    "file": "MM_W17.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MOB_SX02",
+    "name": "Mob Psycho 100",
+    "file": "MOB_SX02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MR_W59",
+    "name": "Magia Record: Puella Magi Madoka Magica Side Story",
+    "file": "MR_W59.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MR_W80",
+    "name": "TV Anime \"Magia Record: Puella Magi Madoka Magica Side Story\"",
+    "file": "MR_W80.json",
+    "lang": "EN"
+  },
+  {
+    "key": "MTI_S83",
+    "name": "Mushoku Tensei: Jobless Reincarnation",
+    "file": "MTI_S83.json",
+    "lang": "EN"
+  },
+  {
+    "key": "NGL_S58",
+    "name": "No Game No Life",
+    "file": "NGL_S58.json",
+    "lang": "EN"
+  },
+  {
+    "key": "NIK_S117",
+    "name": "Booster Pack GODDESS OF VICTORY: NIKKE",
+    "file": "NIK_S117.json",
+    "lang": "EN"
+  },
+  {
+    "key": "NKE1_WE22",
+    "name": "NISEKOI: -False Love-",
+    "file": "NKE1_WE22.json",
+    "lang": "EN"
+  },
+  {
+    "key": "NK_W30",
+    "name": "NISEKOI -False Love- ver.E",
+    "file": "NK_W30.json",
+    "lang": "EN"
+  },
+  {
+    "key": "NM_S24",
+    "name": "NISEMONOGATARI",
+    "file": "NM_S24.json",
+    "lang": "EN"
+  },
+  {
+    "key": "OSK_S107",
+    "name": "【OSHI NO KO】",
+    "file": "OSK_S107.json",
+    "lang": "EN"
+  },
+  {
+    "key": "OVL_S62",
+    "name": "Nazarick: Tomb of the Undead",
+    "file": "OVL_S62.json",
+    "lang": "EN"
+  },
+  {
+    "key": "OVL_S99",
+    "name": "Nazarick: Tomb of the Undead Vol.2",
+    "file": "OVL_S99.json",
+    "lang": "EN"
+  },
+  {
+    "key": "P3_SE46",
+    "name": "[EX] Premium Booster Persona 3 Reload™",
+    "file": "P3_SE46.json",
+    "lang": "EN"
+  },
+  {
+    "key": "P4_S01",
+    "name": "Persona 4 ver.E",
+    "file": "P4_S01.json",
+    "lang": "EN"
+  },
+  {
+    "key": "P5_S45",
+    "name": "Persona 5",
+    "file": "P5_S45.json",
+    "lang": "EN"
+  },
+  {
+    "key": "PD1_S22",
+    "name": "Hatsune Miku -Project DIVA- ƒ",
+    "file": "PD1_S22.json",
+    "lang": "EN"
+  },
+  {
+    "key": "PD2_S29",
+    "name": "Hatsune Miku: Project DIVA F 2nd",
+    "file": "PD2_S29.json",
+    "lang": "EN"
+  },
+  {
+    "key": "PIDX_S04",
+    "name": "Fate/kaleid liner PRISMA ILLYA",
+    "file": "PIDX_S04.json",
+    "lang": "EN"
+  },
+  {
+    "key": "PJS_S91",
+    "name": "Booster Pack HATSUNE MIKU: COLORFUL STAGE!",
+    "file": "PJS_S91.json",
+    "lang": "EN"
+  },
+  {
+    "key": "PXR_S94",
+    "name": "Booster Pack PIXAR CHARACTERS",
+    "file": "PXR_S94.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RKN_S115",
+    "name": "Booster Pack Rurouni Kenshin",
+    "file": "RKN_S115.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RSL_S56",
+    "name": "Revue Starlight",
+    "file": "RSL_S56.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RSL_S69",
+    "name": "Revue Starlight -Re LIVE-",
+    "file": "RSL_S69.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RSL_S98",
+    "name": "Revue Starlight The Movie",
+    "file": "RSL_S98.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RWBY_WX03",
+    "name": "RWBY",
+    "file": "RWBY_WX03.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RWBY_WXE01",
+    "name": "RWBY",
+    "file": "RWBY_WXE01.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RZ2_S55",
+    "name": "Re:ZERO -Starting Life in Another World- Vol.2",
+    "file": "RZ2_S55.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RZ_S46",
+    "name": "Re:ZERO -Starting Life in Another World-",
+    "file": "RZ_S46.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RZ_S68",
+    "name": "Re:ZERO -Starting Life in Another World- Memory Snow",
+    "file": "RZ_S68.json",
+    "lang": "EN"
+  },
+  {
+    "key": "RZ_SE35",
+    "name": "Re:ZERO -Starting Life in Another World- The Frozen Bond",
+    "file": "RZ_SE35.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAO1_S20",
+    "name": "Sword Art Online",
+    "file": "SAO1_S20.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAO2_S26",
+    "name": "Sword Art Online Vol.2",
+    "file": "SAO2_S26.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAOE1_SE23",
+    "name": "Sword Art Online II",
+    "file": "SAOE1_SE23.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAOE2_SE26",
+    "name": "Sword Art Online Ⅱ Vol.2",
+    "file": "SAOE2_SE26.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAOM_S51",
+    "name": "Sword Art Online The Movie – Ordinal Scale –",
+    "file": "SAOM_S51.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAOR_S47",
+    "name": "Sword Art Online Re: Edit",
+    "file": "SAOR_S47.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAO_S100",
+    "name": "Animation Sword Art Online 10th Anniversary",
+    "file": "SAO_S100.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAO_S65",
+    "name": "Sword Art Online -Alicization-",
+    "file": "SAO_S65.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SAO_S80",
+    "name": "Sword Art Online -Alicization- Vol.2",
+    "file": "SAO_S80.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SBY_W114",
+    "name": "Booster Pack Rascal Does Not Dream Series",
+    "file": "SBY_W114.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SBY_W64",
+    "name": "Rascal Does Not Dream of Bunny Girl Senpai",
+    "file": "SBY_W64.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SBY_W77",
+    "name": "Rascal Does Not Dream of a Dreaming Girl",
+    "file": "SBY_W77.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SDS_SX03",
+    "name": "The Seven Deadly Sins",
+    "file": "SDS_SX03.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SDS_SX05",
+    "name": "The Seven Deadly Sins: Revival of The Commandments",
+    "file": "SDS_SX05.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SFN_S108",
+    "name": "Frieren: Beyond Journey’s End",
+    "file": "SFN_S108.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SHS_W56",
+    "name": "Saekano: How to Raise a Boring Girlfriend",
+    "file": "SHS_W56.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SHS_W71",
+    "name": "Saekano♭ How to Raise a Boring Girlfriend. flat",
+    "file": "SHS_W71.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SHS_W98",
+    "name": "Saekano the Movie: Finale",
+    "file": "SHS_W98.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SIX_W109",
+    "name": "Love Live! School idol festival 2 MIRACLE LIVE!",
+    "file": "SIX_W109.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SPY_S106",
+    "name": "SPY x FAMILY",
+    "file": "SPY_S106.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SS_WE41",
+    "name": "Shakugan no Shana",
+    "file": "SS_WE41.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SYE_WE09",
+    "name": "The Melancholy of Haruhi Suzumiya",
+    "file": "SYE_WE09.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SY_W08",
+    "name": "The Melancholy of Haruhi Suzumiya",
+    "file": "SY_W08.json",
+    "lang": "EN"
+  },
+  {
+    "key": "SY_WP02",
+    "name": "Power Up Set 2023 - The Melancholy of Suzumiya Haruhi",
+    "file": "SY_WP02.json",
+    "lang": "EN"
+  },
+  {
+    "key": "TL1_W37",
+    "name": "To Loveru Darkness 2nd",
+    "file": "TL1_W37.json",
+    "lang": "EN"
+  },
+  {
+    "key": "TRV_S92",
+    "name": "Tokyo Revengers",
+    "file": "TRV_S92.json",
+    "lang": "EN"
+  },
+  {
+    "key": "TSK_S101",
+    "name": "That Time I Got Reincarnated as a Slime Vol.3",
+    "file": "TSK_S101.json",
+    "lang": "EN"
+  },
+  {
+    "key": "TSK_S70",
+    "name": "That Time I Got Reincarnated as a Slime",
+    "file": "TSK_S70.json",
+    "lang": "EN"
+  },
+  {
+    "key": "TSK_S82",
+    "name": "That Time I Got Reincarnated as a Slime Vol.2",
+    "file": "TSK_S82.json",
+    "lang": "EN"
+  }
+]

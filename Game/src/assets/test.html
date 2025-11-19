@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Card JSON render test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  body { font-family: system-ui, Arial; margin: 20px; background:#fafafa; }
+  #results { display:flex; flex-wrap:wrap; gap:12px; }
+  .card {
+    width: 220px;
+    border-radius:8px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    background:linear-gradient(180deg,#fff,#fff);
+    overflow:hidden;
+    border:1px solid rgba(0,0,0,0.06);
+    display:flex;
+    flex-direction:column;
+  }
+  .card img { width:100%; height:140px; object-fit:cover; background:#eee; }
+  .card .body { padding:10px; flex:1; display:flex; flex-direction:column; gap:6px; }
+  .card h3 { margin:0; font-size:15px; line-height:1.1; }
+  .meta { font-size:12px; color:#555; display:flex; gap:8px; flex-wrap:wrap; }
+  .abilities { font-size:12px; color:#222; margin-top:6px; max-height:84px; overflow:auto; }
+  .empty { color:#888; font-style:italic; padding:12px; }
+</style>
+</head>
+<body>
+
+<h2>Cards (results)</h2>
+<div id="results" aria-live="polite"></div>
+
+<script>
+// example JSON you posted (trimmed inlined)
+const cardsJson = [
+  {
+    "name":"鳴り止まぬ想い 中野 一花",
+    "code":"5HY/W83-001",
+    "rarity":"RR+",
+    "expansion":"Gotoubun no Hanayome",
+    "side":"W",
+    "type":"Character",
+    "color":"YELLOW",
+    "level":"3",
+    "cost":"2",
+    "trigger":["SOUL"],
+    "power":"10000",
+    "soul":2,
+    "flavor_text":"今夜は二人だけのキャンプファイヤーだよ",
+    "ability":[
+      "【A】When this card is placed on Stage from Hand, look at up to 3 cards from your top Deck, choose up to 1 card, add it to Hand...",
+      "【A】【CXCOMBO】[(1) Place 1 《五つ子》 Character from Hand into Waiting Room] When 「不意の接近」 is in your Climax Slot..."
+    ],
+    "attributes":["Quintuplets 《五つ子》","Fashionable 《オシャレ》"],
+    "set":"5HY","release":"W83","sid":"001",
+    "image":"https://images.littleakiba.com/tcg/card60965-large.jpg"
+  },
+  {
+    "name":"浴衣姿 中野 一花",
+    "code":"5HY/W83-002",
+    "rarity":"RR",
+    "expansion":"Gotoubun no Hanayome",
+    "side":"W",
+    "type":"Character",
+    "color":"YELLOW",
+    "level":"1",
+    "cost":"0",
+    "trigger":[],
+    "power":"4500",
+    "soul":1,
+    "flavor_text":"フータロー君。もう一度聞くね",
+    "ability":[
+      "【A】When this card attacks, if you have other 《五つ子》 Character, during this turn, this card gets +1500 Power.",
+      "【A】【CXCOMBO】When this card attacks, if 「夜闇に咲く名花」 is in your Climax Slot..."
+    ],
+    "attributes":["Quintuplets 《五つ子》","Fashionable 《オシャレ》"],
+    "set":"5HY","release":"W83","sid":"002",
+    "image":"https://images.littleakiba.com/tcg/card60967-large.jpg"
+  }
+  // add more if you want...
+];
+
+function renderCards(cards) {
+  const root = document.getElementById('results');
+  root.innerHTML = '';
+  if (!Array.isArray(cards) || cards.length === 0) {
+    root.innerHTML = '<div class="empty">No cards to show</div>';
+    return;
+  }
+  for (const c of cards) {
+    const el = document.createElement('article');
+    el.className = 'card';
+    const img = document.createElement('img');
+    img.alt = c.name || 'card image';
+    img.src = c.image || '';
+    // fallback if img fails
+    img.onerror = () => { img.src = ''; img.style.background = '#ddd'; img.alt = 'image failed'; };
+    el.appendChild(img);
+
+    const body = document.createElement('div');
+    body.className = 'body';
+    const title = document.createElement('h3');
+    title.textContent = c.name || 'Unnamed';
+    body.appendChild(title);
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = `<span>${c.code || ''}</span><span>${c.rarity || ''}</span><span>Power:${c.power||'-'}</span><span>Level:${c.level||'-'}</span>`;
+    body.appendChild(meta);
+
+    if (c.ability && c.ability.length) {
+      const list = document.createElement('div');
+      list.className = 'abilities';
+      list.innerHTML = c.ability.map(a => `<div>• ${escapeHtml(a)}</div>`).join('');
+      body.appendChild(list);
+    } else if (c.flavor_text) {
+      const flavor = document.createElement('div');
+      flavor.className = 'abilities';
+      flavor.textContent = c.flavor_text;
+      body.appendChild(flavor);
+    }
+
+    el.appendChild(body);
+    root.appendChild(el);
+  }
+}
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// run
+renderCards(cardsJson);
+</script>
+</body>
+</html>

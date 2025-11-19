@@ -1,0 +1,124 @@
+version: "3.8"
+
+services:
+  wsrelay:
+    image: node:20-alpine
+    container_name: wsrelay
+    working_dir: /usr/src/app
+    environment:
+      - TZ=Europe/Amsterdam
+      - NODE_ENV=development
+    volumes:
+      - ./Game/server:/usr/src/app
+      - wsrelay_node_modules:/usr/src/app/node_modules
+    command: sh -lc "npm ci && node --loader ts-node/esm index.ts"
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('net').connect(8080,'127.0.0.1').on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  wsgame:
+    image: node:20-alpine
+    container_name: wsgame
+    working_dir: /usr/src/app
+    environment:
+      - TZ=Europe/Amsterdam
+      - NODE_ENV=development
+      - VITE_WS_URL=wss://wsserv.rembestgirl.synology.me
+      - VITE_PUBLIC_HOST=ws.rembestgirl.synology.me
+      - VITE_HMR_PROTOCOL=wss
+      - VITE_HMR_CLIENT_PORT=443
+      - VITE_HOST=0.0.0.0
+    volumes:
+      - ./Game:/usr/src/app
+      - ./DB-ENG:/usr/src/app/public/DB-ENG:ro
+      - ./DB-JP:/usr/src/app/public/DB-JP:ro
+      - wsgame_node_modules:/usr/src/app/node_modules
+    depends_on:
+      wsrelay:
+        condition: service_healthy
+    command: >
+      sh -lc "
+        npm ci &&
+        until node -e \"require('net').connect(8080,'wsrelay')
+          .on('connect',()=>process.exit(0))
+          .on('error',()=>process.exit(1))\"; do
+          echo '[wsgame] waiting for wsrelay...'; sleep 1;
+        done &&
+        npm run dev -- --host 0.0.0.0 --port 5173
+      "
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+
+  wsadmin:
+    image: node:20-bullseye
+    container_name: wsadmin
+    working_dir: /usr/src/app/Downloader/Admin
+    environment:
+      - TZ=Europe/Amsterdam
+      - NODE_ENV=production
+      - DOWNLOADS_ROOT=/data
+      - VITE_HOST=0.0.0.0
+      - VITE_PORT=5174
+      - PYTHON=python3
+    volumes:
+      - ./Game:/usr/src/app/Game:ro
+      - ./DB-ENG:/data/DB-ENG
+      - ./DB-JP:/data/DB-JP
+      - ./Downloader:/usr/src/app/Downloader
+      - wsadmin_node_modules:/usr/src/app/Downloader/Admin/node_modules
+    ports:
+      - "5174:5174"
+    command: >
+      sh -lc "
+        set -eux;
+        cd /usr/src/app/Downloader/Admin;
+
+        # sanity
+        echo '[wsadmin] node:' $(node -v) 'npm:' $(npm -v);
+
+        # ensure python3 present
+        if ! command -v python3 >/dev/null 2>&1; then
+          echo '[wsadmin] ERROR: python3 not found' >&2;
+          exit 2;
+        fi
+        echo '[wsadmin] python:' $(python3 --version);
+
+        # ensure pip exists
+        if ! command -v pip3 >/dev/null 2>&1; then
+          echo '[wsadmin] pip3 not found, attempting to install...';
+          apt-get update && apt-get install -y python3-pip || true;
+        fi
+        pip3 --version || true;
+
+        echo '[wsadmin] npm ci (with dev deps)';
+        npm ci --no-audit --no-fund --include=dev;
+
+        echo '[wsadmin] building UI (tsc + vite)';
+        npm run build;
+
+        # install Python runtime deps required by downloader scripts
+        echo '[wsadmin] installing Python dependencies (requests)';
+        pip3 install --no-cache-dir requests || true;
+
+        echo '[wsadmin] starting Node API server';
+        exec node server/index.js
+      "
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- --timeout=2 http://127.0.0.1:5174/api/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  wsrelay_node_modules:
+  wsgame_node_modules:
+  wsadmin_node_modules:

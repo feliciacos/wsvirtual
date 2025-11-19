@@ -1,0 +1,18 @@
+{
+  "lastLog": "Finalizing totals",
+  "totalfiles": {
+    "engtotal": 17412,
+    "jptotal": 38968,
+    "engmissing": 0,
+    "jpmissing": 661
+  },
+  "percent_details": {
+    "totalpercent": 98.82759843916283,
+    "totalpercenteng": 100.0,
+    "totalpercentjp": 98.30373639909669,
+    "currentpercent": 0.0,
+    "currentpercenteng": 0.0,
+    "currentpercentjp": 0.0
+  },
+  "timestamp": "2025-11-19T12:45:07.649872Z"
+}

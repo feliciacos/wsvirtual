@@ -1,0 +1,149 @@
+[Docker-Related]
+> Add environmental variables to set accesible ip / localhost / etc
+
+[WSAdmin-Features]
+> Schedule auto download => on temp page
+[WSAdmin-Bugs]
+> the bg is white? should be the greyish whatever thats also in the theme
+
+[WSGame-Features]
+> hide opponent board (for table use)
+> Home page with info / help
+> right click card menu
+ - move to x location
+    - bottom of clock
+    - bottom of deck
+    - cards to bottom stock
+> see top x of opponent deck wihtout opponent seeing
+> level&memory specific cards should be allowed to be flipped(facedown / up)
+> releav card in hand > right click manu?
+> chat maybe?
+> show opponent deck button
+ - Since “marking a card from the top of the deck” is not an official rule (as far as the sources show), you are free to implement however it makes sense for your desired mechanic.
+> Add phase and player control
+ - Phase control, preferably each phase per file to keep organised
+ - player turn control, after final phase (during reactions etc?)
+ - preferably each phase in different file
+> search trough x cards of opponent deck (check discord / rules)
+> level up menu
+ - select what card to keep (frist 7 will be put in waiting room) > other remaining will stay > selected card (1 only) will move to level
+> room passwords
+> If untitled already exists auto rename to Untiltled Deck(1)
+ - line: return first || "Untitled Deck";
+ - Untitled Deck(x+1), X:existing Untitled Deck Entries
+> Update placeholder trigger icons and add missing icon(s)
+> maybe add level and cost icons as well?
+[WSGame-Bugs]
+> Fix / update spectating menu, currently it still looks buggy and flashy.
+> nikita (chrome) heeft die drag issue zooi die ik in firefox had, die is bij mij overigens weg
+> backstage should be slightly wider to include sideways cards (just in case)
+> Firefox drag issue
+> card preview zone is slightly to (not tall)
+> stock zone is slightly to tall
+> card previeuw should be local only
+ - it is local only, except i can hover over opponent cards and put it in their card box
+> opponent dmg/heal +/- buttons should be locked from clicking, it currently doesnt do anything to opponent, but visual fix
+
+> heal takes 2 bottom cards from stock
+ - when heal button appears
+   - Heal Bot / Heal Top (takes x cards from "starting" bottom / "starting top")
+> DMG is placed at the bottom of the clock and not the top
+  - maybe also add dmg top / dmg bot?
+
+[WSRelay-Features&Bugs]
+>
+
+
+
+
+
+
+
+
+> Request URL, seems to parse P/PR/Promos sets? this is probably why some cards dont show up
+https://ws.rembestgirl.synology.me/DB-ENG/Json/PJS_SE49_P.json
+Request Method
+GET
+Request URL
+https://ws.rembestgirl.synology.me/DB-ENG/Json/PJS_SE49_PR.json
+Request Method
+GET
+Request URL
+https://ws.rembestgirl.synology.me/DB-ENG/Json/PJS_SE49_Promos.json
+Request Method
+GET
+
+
+
+[==DONE=======================================================================================]
+
+[Fixed]
+> Memory Overload issue due to WSS size / frequency
+ - Fixed? Requires testing
+> climax card is wrongly rendered in climax / memory field
+> Game/public/Images/Icons/Triggers > add metadata icon in text meta field
+> climax card images are not rotated anywhere besides the hand (should be everywhere)
+> add markers > splayed out > under center stage / back stage
+> clock should be open (bottom of stock cards etc)
+> hoverpreview is still present in card search menu
+> splay memory > stack waiting room
+> The hoverbox is to large for other people, we need to set it to % based and inside some div (permanent spot that scales)
+> Either lock view button midgame or fix the clearing of the board when view is pressed
+> when dropping card on closed stack hover menu stays up (should close when card dropped)
+ - Fixed, however, check if this is also fixed when opponent removes a card from the slot you're hovering over
+     - tested > go fix
+     - NOTE: This will be changed with the hoverbox (call it a feature kek)
+> hand dix expands when getting many cards (on the width)
+> Image for Climax cards should be +90rot
+> Vertical view has slight extra space on the side
+> Stock drag doesn't work
+> zoom out makes the opponent box float up, but it should float down.
+> fix file naming convention / download script
+
+[Added]
+> Climax cards cannot be moved to staged
+> Climax cards should be rendered sideways (now ther're streched in the card view)
+> add card download menu / setting that will use fallback images from the "url" key in the json's
+> add card adding functionality / deck edit
+> DOCKER: Add downloader to the instance, maybe also have urls as fallback ?
+ => make downloader script generate manifold.json files
+    => make it image so it can pull the image (and not get stuck)
+> refresh dmg?
+  - https://bloghorizonws.blogspot.com/2015/12/rules-processing-1-introduction-refresh.html
+> automation of damage
+> automation of healing > top clock > waiting room
+> automation of milling (top / bottom of deck)
+> clear hand button (maybe with "sure?" popup)
+> Stock should have 7 cards width
+> move entire waiting list to deck + shuffle (button) 
+ - automate refresh (next to waiting room)
+> pay from bottom (stock) (button in stock zone)
+  - moves bottom card of stock array to waiting room
+  - same for pay from top
+> created SettingsMenu.tsx
+ - move View horizotal/vertical button in there
+    - replace the view hor/ver button with settings button
+> deck based wallpapers?
+ - Theming?
+ - settings for wallpaper?
+ - als je scrolled blijft de bg op dezelfde plek en moved alleen de UI
+    background-image: url("example.png");
+    background-color: rgba(0,0,0,0.4); /* this acts as opacity layer */
+    background-blend-mode: multiply;   /* try overlay, screen, etc. */
+    background-size: cover;
+    background-position: center;
+> parsing other import settings
+> when import deck overwrites existing deck > popup > Existing Deck X will be overwriten > Yes / No Option
+> Player name selection (and cookie storage)
+> Deck saving inside cookie storage
+> Import deck using .txt from encoredecks
+> room creation an joining logic, multiplayer server functionality, checking availability
+> button to seearh cards
+ - search trough the deck
+ - search trough the waiting room
+> Horizontal vs Vertical switch option
+> add search to memory
+
+
+
+

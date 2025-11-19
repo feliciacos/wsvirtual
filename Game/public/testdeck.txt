@@ -1,0 +1,24 @@
+DAL W79 Starter Deck
+Characters 
+DAL/W79-TE10	2	Hostile, Tohka
+DAL/W79-TE17	2	Confrontation With Spirits, Origami
+DAL/W79-TE08	2	Maximum Support, Kotori
+DAL/W79-TE09	2	Overwhelming Emotions, Kurumi
+DAL/W79-TE16	2	Cool? Yoshino
+DAL/W79-TE05	2	Commander of Ratatoskr, Kotori
+DAL/W79-TE06	4	Engraving Despair, Kurumi
+DAL/W79-TE07	2	Date Day, Tohka
+DAL/W79-TE14	2	Stopped by the Doctor, Yoshino
+DAL/W79-TE15	2	Strange Conversation, Origami
+DAL/W79-TE01	2	Yesterday's Incident, Shido
+DAL/W79-TE02	2	Worst Awakening Method, Kotori
+DAL/W79-TE03	2	Confrontation With Humans, Tohka
+DAL/W79-TE04	4	Meeting up for a Date, Kurumi
+DAL/W79-TE12	4	Abrupt Greeting, Origami
+DAL/W79-TE13	4	Fearful Yoshino
+Events 
+DAL/W79-TE18	2	My Little Shido
+Climaxes 
+DAL/W79-TE11	4	Us
+DAL/W79-TE19	2	Battle Begins
+DAL/W99-E001    2   Fearless Smile, Kurumi
