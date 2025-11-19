@@ -1,0 +1,10 @@
+# ignore DB folders
+DB-ENG/
+DB-JP/
+
+# node / typical ignores (optional)
+node_modules/
+dist/
+.build/
+.env
+.DS_Store
