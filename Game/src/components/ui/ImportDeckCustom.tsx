@@ -111,13 +111,18 @@ export default function ImportDeckCustom(props: {
   React.useEffect(() => {
     let cancelled = false;
     const q = (seriesQuery || "").trim();
-    if (!q) { setLoadingSeries(false); return; }
+
+    // Always show the dropdown while typing / after typing
+    if (!seriesDropdownOpen && q) setSeriesDropdownOpen(true);
+
     setLoadingSeries(true);
+
     const t = window.setTimeout(() => {
       (async () => {
         try {
-          // use live lang state (avoid stale ref closures)
-          const res = await fetchSeriesRef.current(lang, q, 200);
+          // If query is empty, fetch default manifest / full list
+          // so the UI shows "all" entries again when user clears the input.
+          const res = await fetchSeriesRef.current(lang, q === "" ? undefined : q, 200);
           if (cancelled) return;
           setSeriesOptions(res ?? []);
           setSeriesDropdownOpen(true);
@@ -126,8 +131,10 @@ export default function ImportDeckCustom(props: {
         } finally { if (!cancelled) setLoadingSeries(false); }
       })();
     }, 260);
+
     return () => { cancelled = true; clearTimeout(t); };
   }, [seriesQuery, lang]);
+
 
   // load sets for selected series
   React.useEffect(() => {
@@ -171,7 +178,7 @@ export default function ImportDeckCustom(props: {
       return false;
     });
     if (anyLoaded) {
-      try { if (resultsScrollRef.current) resultsScrollRef.current.scrollTop = 0; } catch {}
+      try { if (resultsScrollRef.current) resultsScrollRef.current.scrollTop = 0; } catch { }
     }
   }, [loadedSets, selectedSeries]);
 
@@ -197,7 +204,7 @@ export default function ImportDeckCustom(props: {
       if (!v) continue;
       if (Array.isArray(v)) out.push(...(v as CardShape[]));
       else if (typeof v === "object") {
-        try { out.push(...(Object.values(v as Record<string, any>) as CardShape[])); } catch {}
+        try { out.push(...(Object.values(v as Record<string, any>) as CardShape[])); } catch { }
       }
     }
     return out;
@@ -494,7 +501,8 @@ export default function ImportDeckCustom(props: {
       return [...s, opt];
     });
     setResultsOpen(true);
-    setSeriesDropdownOpen(false);
+    // NOTE: do NOT close the dropdown here — keep it open so users can multi-select
+    // setSeriesDropdownOpen(false);
   }, []);
 
   const clearAll = React.useCallback(() => {
@@ -610,7 +618,20 @@ export default function ImportDeckCustom(props: {
             className="flex-1 px-2 py-1 rounded bg-black/30 border border-white/10 outline-none"
             aria-label="Series search"
           />
-          <button onClick={() => { setSeriesQuery(""); setSeriesOptions([]); setSeriesDropdownOpen(false); }} className="px-3 py-1 rounded bg-white/5">Clear</button>
+          <button
+            onClick={() => {
+              setSeriesQuery("");
+              setLoadingSeries(true);
+              // fetch the default manifest and open the dropdown
+              fetchSeriesRef.current(lang, undefined, 200)
+                .then(res => { setSeriesOptions(res ?? []); setSeriesDropdownOpen(true); })
+                .catch(() => { setSeriesOptions([]); })
+                .finally(() => setLoadingSeries(false));
+            }}
+            className="px-3 py-1 rounded bg-white/5"
+          >
+            Clear
+          </button>
         </div>
 
         {seriesDropdownOpen && (
@@ -622,33 +643,33 @@ export default function ImportDeckCustom(props: {
           >
             {seriesQuery.trim() === "" ? (
               loadingSeries ? <div className="text-xs text-white/50 p-2">Loading series…</div>
-              : seriesOptions.length === 0 ? <div className="text-xs text-white/50 p-2">Click the field to search series</div>
-              : seriesOptions.map(opt => {
-                const picked = !!selectedSeries.find(x => x.key === opt.key);
-                return (
-                  <div key={opt.key} className="flex items-center justify-between gap-2 p-2 hover:bg-white/5 cursor-pointer">
-                    <label className="flex items-center gap-2 cursor-pointer" onClick={() => toggleSeries(opt)}>
-                      <input type="checkbox" checked={picked} readOnly />
-                      <div className="text-sm">{opt.name}</div>
-                    </label>
-                    <div className="text-xs text-white/50">{opt.key}</div>
-                  </div>
-                );
-              })
+                : seriesOptions.length === 0 ? <div className="text-xs text-white/50 p-2">Click the field to search series</div>
+                  : seriesOptions.map(opt => {
+                    const picked = !!selectedSeries.find(x => x.key === opt.key);
+                    return (
+                      <div key={opt.key} className="flex items-center justify-between gap-2 p-2 hover:bg-white/5 cursor-pointer">
+                        <label className="flex items-center gap-2 cursor-pointer" onClick={() => toggleSeries(opt)}>
+                          <input type="checkbox" checked={picked} readOnly />
+                          <div className="text-sm">{opt.name}</div>
+                        </label>
+                        <div className="text-xs text-white/50">{opt.key}</div>
+                      </div>
+                    );
+                  })
             ) : loadingSeries ? <div className="text-xs text-white/50 p-2">Searching series…</div>
               : seriesOptions.length === 0 ? <div className="text-xs text-white/50 p-2">No series matched</div>
-              : seriesOptions.map(opt => {
-                const picked = !!selectedSeries.find(x => x.key === opt.key);
-                return (
-                  <div key={opt.key} className="flex items-center justify-between gap-2 p-2 hover:bg-white/5 cursor-pointer">
-                    <label className="flex items-center gap-2 cursor-pointer" onClick={() => toggleSeries(opt)}>
-                      <input type="checkbox" checked={picked} readOnly />
-                      <div className="text-sm">{opt.name}</div>
-                    </label>
-                    <div className="text-xs text-white/50">{opt.key}</div>
-                  </div>
-                );
-              })
+                : seriesOptions.map(opt => {
+                  const picked = !!selectedSeries.find(x => x.key === opt.key);
+                  return (
+                    <div key={opt.key} className="flex items-center justify-between gap-2 p-2 hover:bg-white/5 cursor-pointer">
+                      <label className="flex items-center gap-2 cursor-pointer" onClick={() => toggleSeries(opt)}>
+                        <input type="checkbox" checked={picked} readOnly />
+                        <div className="text-sm">{opt.name}</div>
+                      </label>
+                      <div className="text-xs text-white/50">{opt.key}</div>
+                    </div>
+                  );
+                })
             }
           </div>
         )}
@@ -778,7 +799,7 @@ export default function ImportDeckCustom(props: {
           <div className="text-xs text-white/70">Tip: use the Ready button in Import dialog to finish import.</div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

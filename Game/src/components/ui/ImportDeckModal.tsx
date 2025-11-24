@@ -99,7 +99,9 @@ export default function ImportDeckModal(props: {
     const readyDisabled = !name.trim() || totalCount !== DECK_MAX || distinctIDs === 0;
 
     // debug (remove or gate behind env when done)
-    console.debug("ImportDeckModal readiness:", { mode, totalCount, distinctIDs, namePresent: !!name.trim(), readyDisabled });
+    //if (process.env.NODE_ENV === "development") {
+    //    console.debug("ImportDeckModal readiness:", { mode, totalCount, distinctIDs, namePresent: !!name.trim(), readyDisabled });
+    //}
 
     // Auto-fill name from first line for EncoreDecks (until user edits name)
     React.useEffect(() => {

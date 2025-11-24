@@ -61,6 +61,7 @@ const setCardRot = (
 function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }: WSPlayfieldProps) {
   const [panelRoot, setPanelRoot] = React.useState<HTMLElement | null>(null);
   const pageZoom = usePageZoom();
+  const isOpponent = !!externalZones;
 
   // measure untransformed content for horizontal rotation math
   const contentRef = React.useRef<HTMLDivElement>(null);
@@ -256,8 +257,74 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
   }, [readOnly]);
   useEffect(() => { if (!readOnly) localStorage.setItem(STORAGE_KEY, JSON.stringify({ zones })); }, [zones, readOnly]);
 
-  const [hoverCard, setHoverCard] = useState<Card | null>(null);
+  // ---- Hover state (split for self vs opponent) ----
+  // hoverSelf: what the local player is currently hovering (used for panel preview)
+  // hoverOpp:  what the local player is hovering *on an opponent board* (kept separately)
+  const [hoverSelf, setHoverSelf] = useState<Card | null>(null);
+  const [hoverOpp, setHoverOpp] = useState<Card | null>(null);
   const [pinnedCard, setPinnedCard] = useState<Card | null>(null);
+
+  /**
+ * Handle hover updates from child Zones/CardViews.
+ * owner: "self" => local board hover (drives the preview panel)
+ * owner: "opponent" => hover over opponent board (kept separate)
+ */
+  const handleHoverCard = (card: Card | null, owner: "self" | "opponent" = "self") => {
+    if (owner === "opponent") setHoverOpp(card);
+    else setHoverSelf(card);
+  };
+
+  // Single helper used by child components that expect `setHoverCard` shorthand
+  const setHoverCard = (c: Card | null) => handleHoverCard(c, externalZones ? "opponent" : "self");
+
+  // --- Cross-board hover bridge ---
+  // When a WSPlayfield is used to render an *opponent* board (externalZones != null),
+  // we dispatch a global event when hovering there. The local board listens and sets
+  // hoverOpp so the preview shows on the local player's panel.
+  const emitHoverToLocal = (c: Card | null) => {
+    if (typeof window === "undefined") return;
+    try {
+      // emit a clear event for null to make receiving code's intent explicit
+      if (c == null) {
+        // separate event for clearing (listener already installs ws-hover-clear -> setHoverOpp(null))
+        window.dispatchEvent(new CustomEvent("ws-hover-clear"));
+      } else {
+        window.dispatchEvent(new CustomEvent("ws-hover-card", { detail: c }));
+      }
+    } catch {
+      // ignore in non-browser or old browsers
+    }
+  };
+
+
+  // ---------- Opponent hover bridge: listen for global hover events ----------
+  React.useEffect(() => {
+    // explicit named handlers so removeEventListener works correctly
+    const onGlobalHover = (e: Event) => {
+      const ev = e as CustomEvent;
+      const c = ev?.detail as Card | null;
+      setHoverOpp(c ?? null);
+    };
+
+    const onGlobalClear = () => {
+      setHoverOpp(null);
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("ws-hover-card", onGlobalHover as EventListener);
+      window.addEventListener("ws-hover-clear", onGlobalClear as EventListener);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("ws-hover-card", onGlobalHover as EventListener);
+        window.removeEventListener("ws-hover-clear", onGlobalClear as EventListener);
+      }
+    };
+  }, []);
+
+
+
   // Centralized confirm modal state
   const [confirm, setConfirm] = useState<{
     open: boolean;
@@ -282,7 +349,17 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
       onConfirm: opts.onConfirm ?? (() => { }),
     });
 
-  useEffect(() => { if (hoverCard) setPinnedCard(hoverCard); }, [hoverCard]);
+  // pinnedCard follows the most-recent live hover (local OR opponent).
+  // We only set pinnedCard when there *is* a live hover; when hover becomes null we keep the last pinned card.
+  useEffect(() => {
+    if (hoverSelf) {
+      setPinnedCard(hoverSelf);
+    } else if (hoverOpp) {
+      setPinnedCard(hoverOpp);
+    }
+    // don't clear pinnedCard when hover becomes null — that preserves the pinned preview
+  }, [hoverSelf, hoverOpp]);
+
   const [damageValue, setDamageValue] = useState<number>(-1);
 
   // lock UI while applying damage/heal
@@ -290,12 +367,11 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
 
   const [hasSeenPreview, setHasSeenPreview] = React.useState(false);
   React.useEffect(() => {
-    // flip once when we first have something to show
-    if ((hoverCard || pinnedCard) && !hasSeenPreview) setHasSeenPreview(true);
-  }, [hoverCard, pinnedCard, hasSeenPreview]);
+    // flip once when we first have something to show (local OR opponent hover or pinned)
+    if ((hoverSelf || hoverOpp || pinnedCard) && !hasSeenPreview) setHasSeenPreview(true);
+  }, [hoverSelf, hoverOpp, pinnedCard, hasSeenPreview]);
 
   const [searchZone, setSearchZone] = useState<ZoneKey | null>(null);
-
   const searchOpen = !!searchZone;
 
   const openSearch = (z: ZoneKey) => {
@@ -374,14 +450,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
           // Cancel ONLY the refresh point
           return { ...z, DECK_TEMP: [], WAITING_ROOM: [...z.WAITING_ROOM, ...moving] };
         } else {
-          // Take the refresh point: top of Clock is index 0
-          const toClockTopFirst = [...moving].reverse();
-          return { ...z, DECK_TEMP: [], CLOCK: [...toClockTopFirst, ...z.CLOCK] };
+          // Append the revealed card(s) to the end of CLOCK so visual "top" is rightmost.
+          // Keep reveal order as-is: moving[0] is the first revealed (and should be below later reveals).
+          return { ...z, DECK_TEMP: [], CLOCK: [...z.CLOCK, ...moving] };
         }
       });
       await raf();
     });
   };
+
 
 
   const applyDamage = async (amount: number) => {
@@ -403,15 +480,6 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
         if ((zonesRef.current?.WAITING_ROOM?.length ?? 0) === 0) break; // nothing to refresh from
         await doRefresh();
         await raf(); // ensure zonesRef syncs
-        const topCardAfterRefresh = zonesRef.current?.DECK?.[0];
-        if (topCardAfterRefresh) {
-          const meta = lookupCardInfo(catalog, topCardAfterRefresh.id);
-          if (meta && isClimaxMeta(meta)) {
-            // The refresh deck’s top card is a climax – this means the refresh damage just canceled.
-            // No damage was taken, but the next reveal will hit the same card and must cancel the packet.
-            // Optional: mark a flag so the very next loop iteration auto-cancels.
-          }
-        }
 
         // Optional: preload meta post-refresh
         try {
@@ -438,7 +506,7 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
 
       if (!revealed) break;
 
-      // Show it
+      // Show it (animation pause)
       await wait(1000);
 
       // Climax check on the original packet
@@ -455,15 +523,16 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
       if (z.DECK_TEMP.length === 0) return z;
       const moving = z.DECK_TEMP;
       if (climaxHit) {
+        // If a climax hit, move the whole revealed packet to Waiting Room (no damage)
         return { ...z, DECK_TEMP: [], WAITING_ROOM: [...z.WAITING_ROOM, ...moving] };
       } else {
-        const toClockTopFirst = [...moving].reverse();
-        return { ...z, DECK_TEMP: [], CLOCK: [...toClockTopFirst, ...z.CLOCK] };
+        // Append the revealed cards in reveal order to the end of CLOCK:
+        // moving[0] = first revealed (earliest damage), moving[1] = next, ...
+        // Appending preserves reveal order visually to the right (rightmost is top).
+        return { ...z, DECK_TEMP: [], CLOCK: [...z.CLOCK, ...moving] };
       }
     });
   };
-
-
 
   /**
    * Apply "heal": move the TOP card of CLOCK to WAITING_ROOM.
@@ -479,10 +548,10 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
       const clock = [...z.CLOCK];
       const wr = [...z.WAITING_ROOM];
       while (remaining > 0 && clock.length > 0) {
-        // Top of CLOCK is the last pushed? We render as a splay but treat index 0 as top
-        // Keep consistent with your existing splay: take the "top" visually from leftmost index 0
-        const topClock = clock[0];
-        clock.splice(0, 1);
+        // Top of CLOCK is the last pushed (rightmost visual card).
+        // Remove from the end so we take the visual top.
+        const topClock = clock[clock.length - 1];
+        clock.splice(clock.length - 1, 1); // pop
         wr.push(topClock);
         remaining--;
       }
@@ -492,7 +561,10 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
 
   /** Handler for the button based on current spinner value */
   const onApplyDamageHeal = async () => {
-    const v = damageRef.current;          // <- always the latest value
+    // lock out opponent panes — no interaction allowed
+    if (isOpponent) return;
+
+    const v = damageRef.current; // <- always the latest value
     if (v === 0 || isResolving) return;
 
     setIsResolving(true);
@@ -506,7 +578,6 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
       setIsResolving(false);
     }
   };
-
 
 
   // ---- Updated helpers ----
@@ -653,7 +724,8 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
   const onDropZone = (to: ZoneKey, targetIndex?: number | null) => (e: React.DragEvent) => {
     if (readOnly) return;
     e.preventDefault();
-    setHoverCard(null);
+    setHoverSelf(null);
+    setHoverOpp(null);
 
     const raw = e.dataTransfer.getData(DND_MIME) || e.dataTransfer.getData("text/plain");
     if (!raw) return;
@@ -694,7 +766,9 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
     e.dataTransfer.setData("text/plain", s);
     e.dataTransfer.effectAllowed = "move";
     if (visualEl) e.dataTransfer.setDragImage(visualEl, 40, 56);
-    const clear = () => setHoverCard(null);
+    // Clear both hover states when drag ends
+    const clear = () => { setHoverSelf(null); setHoverOpp(null); };
+
     window.addEventListener("dragend", clear, { once: true });
   };
 
@@ -814,8 +888,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                   catalog={catalog}
                   onCardDragStart={onCardDragStart}
                   onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                  setHoverCard={setHoverCard}
-                  landscape
+                  setHoverCard={(c) => {
+                    if (externalZones) {
+                      // This instance is rendering an opponent's board — emit the hover event
+                      emitHoverToLocal(c ?? null);
+                    } else {
+                      // Local board instance — set local hover state
+                      handleHoverCard(c, "self");
+                    }
+                  }} landscape
                 />
               </div>
             </Panel>
@@ -856,8 +937,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                   catalog={catalog}
                   onCardDragStart={onCardDragStart}
                   onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                  setHoverCard={setHoverCard}
-                />
+                  setHoverCard={(c) => {
+                    if (externalZones) {
+                      // This instance is rendering an opponent's board — emit the hover event
+                      emitHoverToLocal(c ?? null);
+                    } else {
+                      // Local board instance — set local hover state
+                      handleHoverCard(c, "self");
+                    }
+                  }} />
                 <Zone
                   headerless
                   z="CENTER_C"
@@ -873,8 +961,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                   catalog={catalog}
                   onCardDragStart={onCardDragStart}
                   onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                  setHoverCard={setHoverCard}
-                />
+                  setHoverCard={(c) => {
+                    if (externalZones) {
+                      // This instance is rendering an opponent's board — emit the hover event
+                      emitHoverToLocal(c ?? null);
+                    } else {
+                      // Local board instance — set local hover state
+                      handleHoverCard(c, "self");
+                    }
+                  }} />
                 <Zone
                   headerless
                   z="CENTER_R"
@@ -890,8 +985,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                   catalog={catalog}
                   onCardDragStart={onCardDragStart}
                   onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                  setHoverCard={setHoverCard}
-                />
+                  setHoverCard={(c) => {
+                    if (externalZones) {
+                      // This instance is rendering an opponent's board — emit the hover event
+                      emitHoverToLocal(c ?? null);
+                    } else {
+                      // Local board instance — set local hover state
+                      handleHoverCard(c, "self");
+                    }
+                  }} />
               </div>
             </Panel>
 
@@ -921,8 +1023,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                   catalog={catalog}
                   onCardDragStart={onCardDragStart}
                   onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                  setHoverCard={setHoverCard}
-                  onOpenSearch={openSearch}
+                  setHoverCard={(c) => {
+                    if (externalZones) {
+                      // This instance is rendering an opponent's board — emit the hover event
+                      emitHoverToLocal(c ?? null);
+                    } else {
+                      // Local board instance — set local hover state
+                      handleHoverCard(c, "self");
+                    }
+                  }} onOpenSearch={openSearch}
                   landscape
                 />
               </div>
@@ -984,8 +1093,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                 catalog={catalog}
                 onCardDragStart={onCardDragStart}
                 onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                setHoverCard={setHoverCard}
-              />
+                setHoverCard={(c) => {
+                  if (externalZones) {
+                    // This instance is rendering an opponent's board — emit the hover event
+                    emitHoverToLocal(c ?? null);
+                  } else {
+                    // Local board instance — set local hover state
+                    handleHoverCard(c, "self");
+                  }
+                }} />
             </Panel>
 
             {/* Row 1 — BACK STAGE (2,1) */}
@@ -1022,14 +1138,27 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                     z="BACK_L"
                     rows={1}
                     cols={1}
-                    {...{
-                      zones, zonesToRender: viewZones, readOnly,
-                      onDragEnter, onDragOver, onDropZone, onDraw: draw, catalog,
-                      onCardDragStart, setHoverCard,
-                      onSetCardRot: (z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
-                        setCardRot(z0, uid, rot, setZones),
-                    }}
+                    zones={zones}
+                    zonesToRender={viewZones}
+                    readOnly={readOnly}
+                    onDragEnter={onDragEnter}
+                    onDragOver={onDragOver}
+                    onDropZone={onDropZone}
+                    onDraw={draw}
+                    catalog={catalog}
+                    onCardDragStart={onCardDragStart}
+                    setHoverCard={(c) => {
+                      if (externalZones) {
+                        // This instance is rendering an opponent's board — emit the hover event
+                        emitHoverToLocal(c ?? null);
+                      } else {
+                        // Local board instance — set local hover state
+                        handleHoverCard(c, "self");
+                      }
+                    }} onSetCardRot={(z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
+                      setCardRot(z0, uid, rot, setZones)}
                   />
+
                 </div>
 
                 <div style={{ width: "var(--card)", height: "var(--cardH)" }}>
@@ -1038,13 +1167,25 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                     z="BACK_R"
                     rows={1}
                     cols={1}
-                    {...{
-                      zones, zonesToRender: viewZones, readOnly,
-                      onDragEnter, onDragOver, onDropZone, onDraw: draw, catalog,
-                      onCardDragStart, setHoverCard,
-                      onSetCardRot: (z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
-                        setCardRot(z0, uid, rot, setZones),
-                    }}
+                    zones={zones}
+                    zonesToRender={viewZones}
+                    readOnly={readOnly}
+                    onDragEnter={onDragEnter}
+                    onDragOver={onDragOver}
+                    onDropZone={onDropZone}
+                    onDraw={draw}
+                    catalog={catalog}
+                    onCardDragStart={onCardDragStart}
+                    setHoverCard={(c) => {
+                      if (externalZones) {
+                        // This instance is rendering an opponent's board — emit the hover event
+                        emitHoverToLocal(c ?? null);
+                      } else {
+                        // Local board instance — set local hover state
+                        handleHoverCard(c, "self");
+                      }
+                    }} onSetCardRot={(z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
+                      setCardRot(z0, uid, rot, setZones)}
                   />
                 </div>
               </div>
@@ -1106,8 +1247,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                     onDropZone={onDropZone}
                     onCardDragStart={onCardDragStart}
                     onSetCardRot={(z0, uid, rot) => setCardRot(z0, uid, rot, setZones)}
-                    setHoverCard={setHoverCard}
-                  />
+                    setHoverCard={(c) => {
+                      if (externalZones) {
+                        // This instance is rendering an opponent's board — emit the hover event
+                        emitHoverToLocal(c ?? null);
+                      } else {
+                        // Local board instance — set local hover state
+                        handleHoverCard(c, "self");
+                      }
+                    }} />
                 </div>
 
                 {/* filler div for right “gap balance” — keeps total width consistent */}
@@ -1189,13 +1337,27 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                 z="LEVEL"
                 rows={1}
                 cols={1}
-                {...{
-                  zones, zonesToRender: viewZones, readOnly,
-                  onDragEnter, onDragOver, onDropZone, onDraw: draw, catalog,
-                  onCardDragStart, setHoverCard,
-                  onSetCardRot: (z0: ZoneKey, uid: string, rot: 0 | 90 | 180) => setCardRot(z0, uid, rot, setZones)
-                }}
+                zones={zones}
+                zonesToRender={viewZones}
+                readOnly={readOnly}
+                onDragEnter={onDragEnter}
+                onDragOver={onDragOver}
+                onDropZone={onDropZone}
+                onDraw={draw}
+                catalog={catalog}
+                onCardDragStart={onCardDragStart}
+                setHoverCard={(c) => {
+                  if (externalZones) {
+                    // This instance is rendering an opponent's board — emit the hover event
+                    emitHoverToLocal(c ?? null);
+                  } else {
+                    // Local board instance — set local hover state
+                    handleHoverCard(c, "self");
+                  }
+                }} onSetCardRot={(z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
+                  setCardRot(z0, uid, rot, setZones)}
               />
+
             </section>
 
             {/* Row 2 — WAITING ROOM (3,2) */}
@@ -1229,13 +1391,28 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
               <Zone
                 headerless
                 z="WAITING_ROOM"
-                {...{
-                  zones, zonesToRender: viewZones, readOnly,
-                  onDragEnter, onDragOver, onDropZone, onDraw: draw, catalog,
-                  onCardDragStart, setHoverCard, onOpenSearch: openSearch,
-                  onSetCardRot: (z0: ZoneKey, uid: string, rot: 0 | 90 | 180) => setCardRot(z0, uid, rot, setZones)
-                }}
+                zones={zones}
+                zonesToRender={viewZones}
+                readOnly={readOnly}
+                onDragEnter={onDragEnter}
+                onDragOver={onDragOver}
+                onDropZone={onDropZone}
+                onDraw={draw}
+                catalog={catalog}
+                onCardDragStart={onCardDragStart}
+                setHoverCard={(c) => {
+                  if (externalZones) {
+                    // This instance is rendering an opponent's board — emit the hover event
+                    emitHoverToLocal(c ?? null);
+                  } else {
+                    // Local board instance — set local hover state
+                    handleHoverCard(c, "self");
+                  }
+                }} onOpenSearch={openSearch}
+                onSetCardRot={(z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
+                  setCardRot(z0, uid, rot, setZones)}
               />
+
             </section>
 
             {/* Row 3 — CLOCK spanning columns 2–3 */}
@@ -1264,9 +1441,10 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                           : "bg-red-500/10 hover:bg-red-500/15 border-red-400/30 text-red-200";
                     return (
                       <button
-                        disabled={isZero || isResolving}
+                        disabled={isZero || isResolving || isOpponent}
                         onClick={onApplyDamageHeal}
                         className={`px-2 py-1 text-xs rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${tint}`}
+                        title={isOpponent ? "Locked on opponent board" : undefined}
                       >
                         {label}
                       </button>
@@ -1275,35 +1453,35 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
 
                   {/* Decrement (toward Damage) */}
                   <button
-                    onClick={() =>
+                    onClick={() => {
+                      if (isOpponent || isResolving) return;
                       setDamageValue(v => {
                         const nv = v - 1;
                         damageRef.current = nv; // <- immediate ref sync
                         return nv;
-                      })
-                    }
-                    disabled={isResolving}
+                      });
+                    }}
+                    disabled={isResolving || isOpponent}
                     className="px-2 py-1 text-xs rounded-lg border bg-white/5 hover:bg-white/10 border-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Decrease (toward Damage)"
+                    title={isOpponent ? "Locked on opponent board" : "Decrease (toward Damage)"}
                   >
                     −
                   </button>
-
                   <button
-                    onClick={() =>
+                    onClick={() => {
+                      if (isOpponent || isResolving) return;
                       setDamageValue(v => {
                         const nv = v + 1;
                         damageRef.current = nv; // <- immediate ref sync
                         return nv;
-                      })
-                    }
-                    disabled={isResolving}
+                      });
+                    }}
+                    disabled={isResolving || isOpponent}
                     className="px-2 py-1 text-xs rounded-lg border bg-white/5 hover:bg-white/10 border-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Increase (toward Heal)"
+                    title={isOpponent ? "Locked on opponent board" : "Increase (toward Heal)"}
                   >
                     +
                   </button>
-
                 </div>
               </div>
 
@@ -1314,13 +1492,27 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
                   z="CLOCK"
                   rows={1}
                   cols={6}
-                  {...{
-                    zones, zonesToRender: viewZones, readOnly,
-                    onDragEnter, onDragOver, onDropZone, onDraw: draw, catalog,
-                    onCardDragStart, setHoverCard,
-                    onSetCardRot: (z0: ZoneKey, uid: string, rot: 0 | 90 | 180) => setCardRot(z0, uid, rot, setZones)
-                  }}
+                  zones={zones}
+                  zonesToRender={viewZones}
+                  readOnly={readOnly}
+                  onDragEnter={onDragEnter}
+                  onDragOver={onDragOver}
+                  onDropZone={onDropZone}
+                  onDraw={draw}
+                  catalog={catalog}
+                  onCardDragStart={onCardDragStart}
+                  setHoverCard={(c) => {
+                    if (externalZones) {
+                      // This instance is rendering an opponent's board — emit the hover event
+                      emitHoverToLocal(c ?? null);
+                    } else {
+                      // Local board instance — set local hover state
+                      handleHoverCard(c, "self");
+                    }
+                  }} onSetCardRot={(z0: ZoneKey, uid: string, rot: 0 | 90 | 180) =>
+                    setCardRot(z0, uid, rot, setZones)}
                 />
+
               </div>
             </section>
           </div>
@@ -1489,8 +1681,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
               catalog={catalog}
               onDragStart={onCardDragStart}
               onSetRot={(rot: 0 | 90 | 180) => setCardRot("HAND", c.uid, rot, setZones)}
-              setHoverCard={setHoverCard}
-            />
+              setHoverCard={(c) => {
+                if (externalZones) {
+                  // This instance is rendering an opponent's board — emit the hover event
+                  emitHoverToLocal(c ?? null);
+                } else {
+                  // Local board instance — set local hover state
+                  handleHoverCard(c, "self");
+                }
+              }} />
           </div>
         ))}
       </div>
@@ -1546,14 +1745,11 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
           </button>
         </div>
       </div>
-
-
       <CardMetaPane
-        card={hoverCard ?? pinnedCard}
+        // prefer local hover, then opponent hover, then the pinned local card
+        card={hoverSelf ?? hoverOpp ?? pinnedCard}
         catalog={catalog}
       />
-
-
     </section>
   );
 
@@ -1577,13 +1773,15 @@ function WSPlayfield({ readOnly = false, externalZones, onZonesChange, layout }:
 
         <footer className="text-xs text-white/50 pt-2">Weiss Schwarz Virtual Tabletop, made by Feliciacos</footer>
       </div>
-      <HoverPreview
-        hoverCard={hoverCard}
-        catalog={catalog}
-        pageZoom={pageZoom}
-        portalRoot={panelRoot}
-        mode="panel"
-      />
+      {!externalZones && (
+        <HoverPreview
+          hoverCard={hoverSelf ?? pinnedCard ?? hoverOpp}
+          catalog={catalog}
+          pageZoom={pageZoom}
+          portalRoot={panelRoot}
+          mode="panel"
+        />
+      )}
 
       <ConfirmBox
         open={confirm.open}
